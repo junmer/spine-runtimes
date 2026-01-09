@@ -292,7 +292,7 @@
 ```
 
 ### preserveDrawingBuffer
-- **类型**: `boolean`（必需）
+- **类型**: `boolean`（可选）
 - **说明**: 是否保留绘图缓冲区
 - **默认值**: false
 - **使用场景**: 如果需要通过 canvas.toDataURL() 截图，则需要设置为 true
@@ -474,7 +474,9 @@
   atlasUrl: "assets/skeleton.atlas",
   success: (player) => {
     console.log("骨骼加载成功！");
-    console.log("可用动画：", player.skeleton.data.animations.map(a => a.name));
+    if (player.skeleton) {
+      console.log("可用动画：", player.skeleton.data.animations.map(a => a.name));
+    }
     // 可以在这里设置自定义动画或进行其他初始化
   }
 }
@@ -521,9 +523,11 @@
 {
   update: (player, delta) => {
     // 修改骨骼位置、旋转等
-    let bone = player.skeleton.findBone("head");
-    if (bone) {
-      bone.rotation += delta * 45;  // 每秒旋转45度
+    if (player.skeleton) {
+      let bone = player.skeleton.findBone("head");
+      if (bone) {
+        bone.rotation += delta * 45;  // 每秒旋转45度
+      }
     }
   }
 }
@@ -662,8 +666,10 @@ new spine.SpinePlayer("advanced-player", {
   
   success: (player) => {
     console.log("播放器加载成功");
-    console.log("骨骼：", player.skeleton.data.name);
-    console.log("可用动画：", player.skeleton.data.animations.map(a => a.name));
+    if (player.skeleton) {
+      console.log("骨骼：", player.skeleton.data.name);
+      console.log("可用动画：", player.skeleton.data.animations.map(a => a.name));
+    }
   },
   
   error: (player, msg) => {
@@ -750,10 +756,12 @@ let player = new spine.SpinePlayer("controlled-player", {
   preserveDrawingBuffer: true,
   success: (player) => {
     // 截图
-    let dataURL = player.canvas.toDataURL();
-    let img = document.createElement('img');
-    img.src = dataURL;
-    document.body.appendChild(img);
+    if (player.canvas) {
+      let dataURL = player.canvas.toDataURL();
+      let img = document.createElement('img');
+      img.src = dataURL;
+      document.body.appendChild(img);
+    }
   }
 }
 ```
